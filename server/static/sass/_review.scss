@@ -10,7 +10,8 @@
 
 .comment-vote {
   font-size: 14px;
-  margin-top: 10px;
+  padding-left: 12px;
+  margin: 10px 0px 15px 0px;
 }
 
 .helpful-review {
@@ -24,7 +25,6 @@
   font-size: 14px;
   padding-left: 8px;
   padding-right: 8px;
-  background-color: #00000000;
 
   &:focus {
     outline: none;
