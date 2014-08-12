@@ -204,19 +204,13 @@ class Professor(me.Document):
         # Quality filter.
         # TODO(david): Eventually do this in mongo query or enforce quality
         #     metrics on front-end
-        prof_review_dicts = []
-        for uc in ucs:
-            if (len(uc.professor_review.comment) <
-                    _review.ProfessorReview.MIN_REVIEW_LENGTH):
-                continue
+        ucs = filter(
+                lambda uc: len(uc.professor_review.comment)
+                    >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
+                ucs)
 
-            prof_review_dicts.append(uc.professor_review.to_dict(current_user,
-                getattr(uc, 'user_id', None), uc.id))
-
-        # Try to not show older reviews, if we have enough results
-        date_getter = lambda review: review['comment_date']
-        prof_review_dicts = util.publicly_visible_ratings_and_reviews_filter(
-                prof_review_dicts, date_getter, util.MIN_NUM_REVIEWS)
+        prof_review_dicts = [uc.professor_review.to_dict(current_user,
+            getattr(uc, 'user_id', None), uc.id) for uc in ucs]
 
         return prof_review_dicts
 

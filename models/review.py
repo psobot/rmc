@@ -1,7 +1,6 @@
 from datetime import datetime
 import mongoengine as me
 import logging
-import uuid
 
 
 class Privacy(object):
@@ -113,7 +112,8 @@ class BaseReview(me.EmbeddedDocument):
         if 'privacy' in kwargs:
             self.privacy = Privacy.to_int(kwargs['privacy'])
 
-    def to_dict(self, current_user=None, author_id=None):
+    def to_dict(self, current_user=None, author_id=None, user_course_id=None,
+            review_type=None):
         dict_ = {
             'comment': self.comment,
             'comment_date': self.comment_date,
@@ -122,6 +122,13 @@ class BaseReview(me.EmbeddedDocument):
             'num_rated_useful_total': self.num_rated_useful_total,
             'num_found_useful': self.num_found_useful
         }
+
+        if user_course_id:
+            if current_user and not current_user.rated_review(
+                    str(user_course_id) + review_type):
+                dict_['user_course_id'] = str(user_course_id)
+            if review_type:
+                dict_['review_type'] = review_type
 
         if author_id:
             # TODO(david): Remove circular dependency
@@ -170,12 +177,8 @@ class CourseReview(BaseReview):
                 self.old_usefulness, self.usefulness)
 
     def to_dict(self, current_user=None, author_id=None, user_course_id=None):
-        temp_dict = super(CourseReview, self).to_dict(current_user, author_id)
-        temp_dict['review_type'] = 'course'
-        if user_course_id:
-            if current_user and not current_user.rated_review(
-                    str(user_course_id) + 'course'):
-                temp_dict['user_course_id'] = str(user_course_id)
+        temp_dict = super(CourseReview, self).to_dict(current_user, author_id,
+                user_course_id, 'course')
         return temp_dict
 
 
@@ -232,10 +235,6 @@ class ProfessorReview(BaseReview):
                 cur_course.id, redis_changes)
 
     def to_dict(self, current_user=None, author_id=None, user_course_id=None):
-        temp_dict = super(ProfessorReview, self).to_dict(current_user, author_id)
-        temp_dict['review_type'] = 'prof'
-        if user_course_id:
-            if current_user and not current_user.rated_review(
-                    str(user_course_id) + 'prof'):
-                temp_dict['user_course_id'] = str(user_course_id)
+        temp_dict = super(ProfessorReview, self).to_dict(current_user,
+                author_id, user_course_id, 'prof')
         return temp_dict

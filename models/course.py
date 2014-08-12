@@ -1,7 +1,6 @@
 import collections
 import logging
 import re
-import uuid
 
 import mongoengine as me
 import pymongo
