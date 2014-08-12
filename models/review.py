@@ -39,7 +39,6 @@ class BaseReview(me.EmbeddedDocument):
     # (either created, modified, or deleted)
     rating_change_date = me.DateTimeField()
     privacy = me.IntField(choices=Privacy.choices(), default=Privacy.FRIENDS)
-    id = me.StringField()
     num_found_useful = me.IntField(default=0)
     num_rated_useful_total = me.IntField(default=0)
 
@@ -124,9 +123,6 @@ class BaseReview(me.EmbeddedDocument):
             'num_found_useful': self.num_found_useful
         }
 
-        if current_user and not current_user.rated_review(self.id):
-            dict_['id'] = self.id,
-
         if author_id:
             # TODO(david): Remove circular dependency
             import user as _user
@@ -172,6 +168,15 @@ class CourseReview(BaseReview):
         if hasattr(self, 'old_usefulness'):
             cur_course.usefulness.update_aggregate_after_replacement(
                 self.old_usefulness, self.usefulness)
+
+    def to_dict(self, current_user=None, author_id=None, user_course_id=None):
+        temp_dict = super(CourseReview, self).to_dict(current_user, author_id)
+        temp_dict['review_type'] = 'course'
+        if user_course_id:
+            if current_user and not current_user.rated_review(
+                    str(user_course_id) + 'course'):
+                temp_dict['user_course_id'] = str(user_course_id)
+        return temp_dict
 
 
 class ProfessorReview(BaseReview):
@@ -225,3 +230,12 @@ class ProfessorReview(BaseReview):
 
         cur_professor.update_redis_ratings_for_course(
                 cur_course.id, redis_changes)
+
+    def to_dict(self, current_user=None, author_id=None, user_course_id=None):
+        temp_dict = super(ProfessorReview, self).to_dict(current_user, author_id)
+        temp_dict['review_type'] = 'prof'
+        if user_course_id:
+            if current_user and not current_user.rated_review(
+                    str(user_course_id) + 'prof'):
+                temp_dict['user_course_id'] = str(user_course_id)
+        return temp_dict

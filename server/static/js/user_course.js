@@ -35,6 +35,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     initialize: function(attrs) {
+      console.log(attrs);
       var courseReview = new UserComment(
           attrs ? attrs.course_review : undefined);
       var profReview = new UserComment(
