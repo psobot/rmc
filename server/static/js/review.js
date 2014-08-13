@@ -25,10 +25,10 @@ function(RmcBackbone, $, _, ratings, util) {
           this.set('id', null);
         }
         if (attrs.num_found_useful) {
-          this.set('num_found_useful', attrs.num_found_useful)
+          this.set('num_voted_useful', attrs.num_voted_useful)
         }
         if (attrs.num_rated_useful_total) {
-          this.set('num_rated_useful_total', attrs.num_rated_useful_total);
+          this.set('num_voted_unuseful', attrs.num_voted_unuseful);
         }
         if (attrs.review_type) {
          this.set('review_type', attrs.review_type);
@@ -106,11 +106,12 @@ function(RmcBackbone, $, _, ratings, util) {
 
     reviewButtonClicked: function(e) {
       if (e.target.textContent === 'Yes') {
-        this.model.set('num_found_useful',
-            parseInt(this.model.get('num_found_useful')) + 1);
+        this.model.set('num_voted_useful',
+            parseInt(this.model.get('num_voted_useful')) + 1);
+      } else {
+          this.model.set('num_voted_unuseful',
+              parseInt(this.model.get('num_voted_unuseful')) + 1);
       }
-      this.model.set('num_rated_useful_total',
-          parseInt(this.model.get('num_rated_useful_total')) + 1);
 
       $.ajax('/api/v1/user/rate_review_for_user/', {
         type: 'PUT',

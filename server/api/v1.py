@@ -526,22 +526,28 @@ def rate_review_for_user():
     filtered_courses = m.UserCourse.objects(id=review_id)
     if len(filtered_courses) > 0:
         uc = filtered_courses[0]
-        uc_review = uc.course_review if review_type == 'course' else uc.professor_review
+        if review_type == 'course':
+            uc_review = uc.course_review
+        else:
+            uc_review = uc.professor_review
     else:
-        filtered_courses = m.MenloCourse.objects(
-                id=review_id)
+        filtered_courses = m.MenloCourse.objects(id=review_id)
         if len(filtered_courses) > 0:
             uc = filtered_courses[0]
             uc_review = uc.professor_review
 
     if uc_review:
-        uc_review.num_rated_useful_total += 1
         if found_helpful == 'true':
-            uc_review.num_found_useful += 1
+            uc_review.num_voted_useful += 1
+        else:
+            uc_review.num_voted_unuseful += 1
         uc.save()
 
     user = _get_user_require_auth()
-    user.rated_review_ids.append(review_id + review_type)
+    if review_type == 'course':
+        user.voted_course_review_ids.append(review_id)
+    elif review_type == 'prof':
+        user.voted_prof_review_ids.append(review_id)
     user.save()
 
     return api_util.jsonify({

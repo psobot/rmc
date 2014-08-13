@@ -39,9 +39,9 @@
   </div>
   <div class="span9">
   <div class="comment-text">
-    <% if (num_rated_useful_total > 0) { %>
-      <div class="muted helpful-review"><%- num_found_useful %> out of
-        <%- num_rated_useful_total %> people found this review helpful</div>
+    <% if (num_voted_useful + num_voted_unuseful > 0) { %>
+      <div class="muted helpful-review"><%- num_voted_useful %> out of
+        <%- num_voted_useful + num_voted_unuseful %> people found this review helpful</div>
     <% } %>
     <%- comment %>
   </div>
