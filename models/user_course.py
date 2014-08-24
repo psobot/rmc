@@ -206,9 +206,10 @@ class UserCourse(me.Document):
         def map_field(prop):
             val = getattr(self, prop)
             if hasattr(val, 'to_dict'):
-                temp_dict = val.to_dict()
-                temp_dict['user_course_id'] = str(self.id)
-                return temp_dict
+                if prop == 'course_review' or prop == 'professor_review':
+                    return val.to_dict(user_course_id=self.id)
+                else:
+                    return val.to_dict()
             else:
                 return val
 
