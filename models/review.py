@@ -38,8 +38,8 @@ class BaseReview(me.EmbeddedDocument):
     # (either created, modified, or deleted)
     rating_change_date = me.DateTimeField()
     privacy = me.IntField(choices=Privacy.choices(), default=Privacy.FRIENDS)
-    num_voted_useful = me.IntField(default=0)
-    num_voted_unuseful = me.IntField(default=0)
+    num_voted_helpful = me.IntField(default=0)
+    num_voted_not_helpful = me.IntField(default=0)
 
     # Minimum number of characters for a review to pass
     # TODO(david): Have a function to do this. First, we need consistent review
@@ -119,15 +119,15 @@ class BaseReview(me.EmbeddedDocument):
             'comment_date': self.comment_date,
             'privacy': Privacy.to_str(self.privacy),
             'ratings': self.get_ratings_array(),
-            'num_voted_not_helpful': self.num_voted_unuseful,
-            'num_voted_helpful': self.num_voted_useful,
+            'num_voted_not_helpful': self.num_voted_not_helpful,
+            'num_voted_helpful': self.num_voted_helpful,
             'can_vote': False
         }
 
         if user_course_id:
+            dict_['user_course_id'] = str(user_course_id)
             if current_user and not current_user.rated_review(
                     str(user_course_id), review_type):
-                dict_['user_course_id'] = str(user_course_id)
                 dict_['can_vote'] = True
             if review_type:
                 dict_['review_type'] = review_type

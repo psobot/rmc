@@ -519,7 +519,7 @@ def rate_review_for_user():
     """
     values = flask.request.values
     review_id = values.get('review_id')
-    voted_useful = values.get('voted_useful')
+    voted_helpful = values.get('voted_helpful')
     review_type = values.get('review_type')
 
     uc_review = None
@@ -537,10 +537,10 @@ def rate_review_for_user():
             uc_review = uc.professor_review
 
     if uc_review:
-        if voted_useful == 'true':
-            uc_review.num_voted_useful += 1
+        if voted_helpful == 'true':
+            uc_review.num_voted_helpful += 1
         else:
-            uc_review.num_voted_unuseful += 1
+            uc_review.num_voted_not_helpful += 1
         uc.save()
 
     user = _get_user_require_auth()
