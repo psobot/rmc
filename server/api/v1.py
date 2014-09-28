@@ -511,6 +511,7 @@ def add_course_to_shortlist(course_id):
         'user_course': user_course.to_dict(),
     })
 
+# TODO(david): Add corresponding remove course endpoint
 
 @api.route('/user/rate_review_for_user', methods=['PUT'])
 def rate_review_for_user():
@@ -562,8 +563,6 @@ def rate_review_for_user():
         uc.save()
 
     return vote_added_response
-
-# TODO(david): Add corresponding remove course endpoint
 
 
 ###############################################################################
