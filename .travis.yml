@@ -1,0 +1,9 @@
+before_script:
+      - echo 'Canada/Eastern' | sudo tee /etc/timezone
+      - sudo dpkg-reconfigure --frontend noninteractive tzdata
+
+install:
+  - npm install mocha-phantomjs phantomjs
+
+script:
+  - ./js_test.sh

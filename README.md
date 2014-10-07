@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JGulbronson/rmc.svg?branch=travis_ci_integration)](https://travis-ci.org/JGulbronson/rmc)
+
 # Flow
 
 Plan your courses

@@ -21,6 +21,7 @@ if [ ! -f node_modules/mocha-phantomjs/bin/mocha-phantomjs ]; then
   exit 1
 fi
 
+sleep 1
 # Run the actual Mocha tests
 node_modules/mocha-phantomjs/bin/mocha-phantomjs \
   http://127.0.0.1:8000/static/js/js_tests/test.html
